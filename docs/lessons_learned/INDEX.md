@@ -22,3 +22,4 @@ Verify any file/type/command still exists before relying on an entry.
 - [2026-11-25-gq0003-gq0004-using-directives.md](2026-11-25-gq0003-gq0004-using-directives.md): GQ0003/GQ0004 analyzers for names and built-in aliases in using directives; GQ0001/GQ0002 now skip using directives.
 - [2026-11-25-fix-build-warnings.md](2026-11-25-fix-build-warnings.md): Moved diagnostic severities from `.editorconfig` to `.globalconfig`, pruned unused packages and fixed the other DotNetProjectFile/StyleCop warnings; CRLF pitfall with Git Bash `sed -i`.
 - [2026-11-25-code-fixes.md](2026-11-25-code-fixes.md): One text-replacement code fix for GQ0001–GQ0004 via a replacement in diagnostic properties; custom fix-all skips nested diagnostics; RS1038 suppressed.
+- [2026-11-25-rule-docs.md](2026-11-25-rule-docs.md): Rule documentation in `docs/rules/` (one file per GQ rule plus `INDEX.md`), samples taken from the analyzer tests.
