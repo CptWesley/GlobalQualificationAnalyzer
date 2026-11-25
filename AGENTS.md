@@ -39,14 +39,15 @@ After each session, create a "lessons learned" markdown file in `docs/lessons_le
 Run everything from `src/`, where the solution `GlobalQualificationAnalyzer.slnx` lives.
 
 ```sh
-dotnet restore
-dotnet build
-dotnet test                                                # all test projects
+dotnet restore GlobalQualificationAnalyzer.slnx
+dotnet build GlobalQualificationAnalyzer.slnx
+dotnet test GlobalQualificationAnalyzer.slnx               # all test projects
 ```
 
 - The library targets `netstandard2.0`.
 - Packages are managed centrally in `src/Directory.Packages.props`, and every project has a `packages.lock.json`. After you change a dependency, restore so the lock files are regenerated. CI builds run in locked mode (`ContinuousIntegrationBuild=true`).
 - Analyzers run on every build: StyleCop (packable projects only), Sonar, Qowaiv, AsyncFixer and DotNetProjectFile. Rule overrides live in `src/.editorconfig` and `src/.globalconfig`.
+- DotNetProjectFile runs only from `src/.net.csproj` (an SDK project with no build output), which analyzes every project, props, `.slnx`, `.editorconfig` and `NuGet.config` under `src/`. Because `src/` holds both `.net.csproj` and the `.slnx`, pass the solution explicitly to `dotnet` commands.
 
 ## Build layout
 

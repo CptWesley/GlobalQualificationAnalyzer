@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path=".net.csproj" />
   <Project Path="GlobalQualificationAnalyzer/GlobalQualificationAnalyzer.csproj" />
 </Solution>
