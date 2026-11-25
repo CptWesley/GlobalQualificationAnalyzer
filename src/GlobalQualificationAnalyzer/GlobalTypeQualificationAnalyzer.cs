@@ -93,13 +93,7 @@ public sealed class GlobalTypeQualificationAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        var diagnostic = Diagnostic.Create(
-            Rule,
-            node.GetLocation(),
-            node.ToString(),
-            type.ToDisplayString(QualifiedFormat));
-
-        context.ReportDiagnostic(diagnostic);
+        context.Report(Rule, node, node.ToString(), type.ToDisplayString(QualifiedFormat));
     }
 
     /// <summary>'[global::System.Obsolete]' omits the suffix of 'ObsoleteAttribute'.</summary>

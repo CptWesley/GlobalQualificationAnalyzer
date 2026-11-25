@@ -2,6 +2,10 @@ is_global = true
 
 dotnet_diagnostic.Proj0009.severity = none
 
+# ponytail: code fixes live in the analyzer assembly. The analyzer types never touch
+# Workspaces types, so csc loads them fine; split into a separate CodeFixes assembly if that changes.
+dotnet_diagnostic.RS1038.severity = none
+
 # Nullability
 dotnet_diagnostic.CS8600.severity = error
 dotnet_diagnostic.CS8601.severity = error

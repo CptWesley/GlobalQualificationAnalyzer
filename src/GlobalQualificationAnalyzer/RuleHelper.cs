@@ -7,6 +7,30 @@ namespace GlobalQualificationAnalyzer;
 /// </summary>
 internal static class RuleHelper
 {
+    /// <summary>Key of the diagnostic property that holds the globally qualified replacement.</summary>
+    public const string ReplacementKey = "Replacement";
+
+    /// <summary>
+    /// Reports that <paramref name="node"/> must be replaced by <paramref name="replacement"/>.
+    /// </summary>
+    /// <param name="context">The analysis context.</param>
+    /// <param name="rule">The violated rule; its message takes the original and the replacement.</param>
+    /// <param name="node">The node to replace.</param>
+    /// <param name="original">The original text, shown in the message.</param>
+    /// <param name="replacement">The replacement, shown in the message and applied by the code fix.</param>
+    public static void Report(
+        this SyntaxNodeAnalysisContext context,
+        DiagnosticDescriptor rule,
+        SyntaxNode node,
+        string original,
+        string replacement)
+        => context.ReportDiagnostic(Diagnostic.Create(
+            rule,
+            node.GetLocation(),
+            ImmutableDictionary<string, string?>.Empty.Add(ReplacementKey, replacement),
+            original,
+            replacement));
+
     /// <summary>
     /// Creates a new rule descriptor.
     /// </summary>

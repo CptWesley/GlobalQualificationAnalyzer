@@ -45,11 +45,7 @@ public sealed class UsingBuiltInTypeAliasAnalyzer : DiagnosticAnalyzer
             // void has no alternative: global::System.Void is not allowed (CS0673).
             if (node.Keyword.Kind().QualifiedName() is { } qualified)
             {
-                context.ReportDiagnostic(Diagnostic.Create(
-                    Rule,
-                    node.GetLocation(),
-                    node.Keyword.Text,
-                    qualified));
+                context.Report(Rule, node, node.Keyword.Text, qualified);
             }
         }
     }

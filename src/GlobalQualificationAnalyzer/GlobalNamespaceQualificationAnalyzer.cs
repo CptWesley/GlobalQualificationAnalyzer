@@ -64,12 +64,6 @@ public sealed class GlobalNamespaceQualificationAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        var diagnostic = Diagnostic.Create(
-            Rule,
-            name.GetLocation(),
-            name.ToString(),
-            symbol.ToDisplayString(GlobalTypeQualificationAnalyzer.QualifiedFormat));
-
-        context.ReportDiagnostic(diagnostic);
+        context.Report(Rule, name, name.ToString(), symbol.ToDisplayString(GlobalTypeQualificationAnalyzer.QualifiedFormat));
     }
 }

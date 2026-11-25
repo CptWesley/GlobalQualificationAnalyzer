@@ -48,12 +48,6 @@ public sealed class BuiltInTypeAliasAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        var diagnostic = Diagnostic.Create(
-            Rule,
-            node.GetLocation(),
-            node.Keyword.Text,
-            qualified);
-
-        context.ReportDiagnostic(diagnostic);
+        context.Report(Rule, node, node.Keyword.Text, qualified);
     }
 }
