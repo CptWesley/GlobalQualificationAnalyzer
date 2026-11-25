@@ -50,6 +50,11 @@ public sealed class BuiltInTypeAliasAnalyzerTests
                 "Built-in type alias 'byte' must be replaced by 'global::System.Byte'");
 
     [Test]
+    public async Task Reports_alias_in_sizeof()
+        => (await Analyze("class C { const global::System.Int32 X = sizeof(long); }"))
+            .Should().Equal("Built-in type alias 'long' must be replaced by 'global::System.Int64'");
+
+    [Test]
     public async Task Reports_enum_underlying_type()
         => (await Analyze("enum E : short { }"))
             .Should().Equal("Built-in type alias 'short' must be replaced by 'global::System.Int16'");
