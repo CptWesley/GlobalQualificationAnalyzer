@@ -10,6 +10,14 @@ internal static class RuleHelper
     /// <summary>
     /// Creates a new rule descriptor.
     /// </summary>
+    /// <param name="id">The rule number, formatted as <c>GQ0000</c>.</param>
+    /// <param name="title">The rule title.</param>
+    /// <param name="message">The message format; defaults to <paramref name="title"/>.</param>
+    /// <param name="description">The optional rule description.</param>
+    /// <param name="category">The rule category.</param>
+    /// <param name="severity">The default severity.</param>
+    /// <param name="isEnabledByDefault">Whether the rule is enabled by default.</param>
+    /// <returns>The created rule descriptor.</returns>
     public static DiagnosticDescriptor Create(
         int id,
         string title,
