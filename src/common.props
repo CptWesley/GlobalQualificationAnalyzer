@@ -36,6 +36,10 @@
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(ContinuousIntegrationBuild)' == 'true'">
     <RestoreLockedMode>true</RestoreLockedMode>
   </PropertyGroup>
