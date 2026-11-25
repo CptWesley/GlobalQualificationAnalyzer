@@ -2,9 +2,9 @@
 |-----------------------------|--------|---------|-----------|
 | GlobalQualificationAnalyzer | [![NuGet](https://img.shields.io/nuget/v/GlobalQualificationAnalyzer.svg)](https://www.nuget.org/packages/GlobalQualificationAnalyzer/) | [![NuGet](https://img.shields.io/nuget/vpre/GlobalQualificationAnalyzer.svg)](https://www.nuget.org/packages/GlobalQualificationAnalyzer/absoluteLatest) | [![NuGet](https://img.shields.io/nuget/dt/GlobalQualificationAnalyzer.svg)](https://www.nuget.org/packages/GlobalQualificationAnalyzer) |
 
-![GlobalQualificationAnalyzer Logo](logo_128x128.png)
+[![GlobalQualificationAnalyzer Logo](logo_128x128.png)](https://github.com/CptWesley/GlobalQualificationAnalyzer)
 
-# GlobalQualificationAnalyzer
+# [GlobalQualificationAnalyzer](https://github.com/CptWesley/GlobalQualificationAnalyzer)
 Roslyn analyzer and code fix for enforcing global qualification of types and namespaces in C#.
 
 ## What is it?
