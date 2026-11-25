@@ -1,7 +1,3 @@
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Diagnostics;
-
 namespace GlobalQualificationAnalyzer.Tests;
 
 public sealed class GlobalTypeQualificationAnalyzerTests
@@ -71,27 +67,6 @@ public sealed class GlobalTypeQualificationAnalyzerTests
         => (await Analyze("using System; class C { }"))
             .Should().BeEmpty();
 
-    private static async Task<string[]> Analyze(string source)
-    {
-        var references = ((string)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES")!)
-            .Split(Path.PathSeparator)
-            .Select(path => MetadataReference.CreateFromFile(path));
-
-        var compilation = CSharpCompilation.Create(
-            "Test",
-            [CSharpSyntaxTree.ParseText(source)],
-            references,
-            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
-
-        // Broken test source would silently produce no diagnostics.
-        compilation.GetDiagnostics()
-            .Where(d => d.Severity == DiagnosticSeverity.Error)
-            .Should().BeEmpty();
-
-        var diagnostics = await compilation
-            .WithAnalyzers([new GlobalTypeQualificationAnalyzer()])
-            .GetAnalyzerDiagnosticsAsync();
-
-        return [.. diagnostics.Select(d => d.GetMessage(CultureInfo.InvariantCulture))];
-    }
+    private static Task<string[]> Analyze(string source)
+        => AnalyzerRunner.Analyze(new GlobalTypeQualificationAnalyzer(), source);
 }
