@@ -28,6 +28,15 @@ Activate the current dir as project using Serena.
 
 Prefer Roslynaut, LSP or Serena over bash commands, grep and glob when navigating or editing the C# code base. Roslynaut sees the code as the compiler does: use `document_symbols`, `symbol_source`, `find_symbols`, `workspace_symbols`, `references` and `callers` instead of reading and grepping `.cs` files, and `diagnostics` instead of building after an edit. Pass projectPath `src/GlobalQualificationAnalyzer.slnx` (absolute path) and keep passing the same path so the loaded workspace is reused.
 
+## Rule Documentation
+
+Every analyzer rule has a document in `docs/rules/` (`GQ0001.md`, ...), listed in [docs/rules/INDEX.md](docs/rules/INDEX.md). Each document explains the rule, shows the rejected cases and how to rewrite them so they are accepted, and lists what is deliberately not reported.
+
+Keep these documents up to date with the code:
+- Adding a rule: add `docs/rules/<rule-id>.md` in the same format and a line to `docs/rules/INDEX.md`.
+- Changing a rule (what it reports, what it skips, its message, severity or replacement): update its document, and the "Not reported" cross-links in the other rules' documents if the boundary between rules moves.
+- Samples in the documents mirror the analyzer tests; when a test case is added or changed, check whether the document needs the same change.
+
 ## Lessons Learned Previous Sessions
 
 Check [docs/lessons_learned/INDEX.md](docs/lessons_learned/INDEX.md) for a similar prior task before starting new work — one line per entry, links to the full write-up.
