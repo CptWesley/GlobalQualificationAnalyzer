@@ -3,18 +3,13 @@
   <Import Project="common.props" />
 
   <PropertyGroup Label="PackageInfo">
-    <Description>Packrat parser combinator supporting left-recursion with a focus on elegance.</Description>
-    <PackageTags>parser; combinator; language; parsing; parsercombinator; parser combinator; packrat; cfg; leftrecursion; left-recursion; left; recursion</PackageTags>
-    <Version>3.0.0-preview04</Version>
+    <Description>Roslyn analyzer for enforcing global qualification of types and namespaces.</Description>
+    <PackageTags>roslyn;analyzer;global</PackageTags>
+    <Version>1.0.0</Version>
     <PackageReleaseNotes>
       <![CDATA[
-        ### v3.0.0
-        - Significantly improved performance.
-        - Reworked API interface.
-        ### v2.0.0
-        - Reworked library from scratch.
-        - Changed to Packrat parsing.
-        - Added support for left-recursion.
+        ### v1.0.0
+        - Initial release.
       ]]>
     </PackageReleaseNotes>
   </PropertyGroup>
