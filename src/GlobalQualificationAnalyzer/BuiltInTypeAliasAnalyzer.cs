@@ -36,6 +36,12 @@ public sealed class BuiltInTypeAliasAnalyzer : DiagnosticAnalyzer
     {
         var node = (PredefinedTypeSyntax)context.Node;
 
+        // Using directives are covered by GQ0004.
+        if (node.IsInUsingDirective())
+        {
+            return;
+        }
+
         // void has no alternative: global::System.Void is not allowed (CS0673).
         if (QualifiedName(node.Keyword.Kind()) is not { } qualified)
         {
@@ -51,7 +57,10 @@ public sealed class BuiltInTypeAliasAnalyzer : DiagnosticAnalyzer
         context.ReportDiagnostic(diagnostic);
     }
 
-    private static string? QualifiedName(SyntaxKind keyword) => keyword switch
+    /// <summary>Gets the globally qualified name of a built-in type alias.</summary>
+    /// <param name="keyword">The keyword of the built-in type alias.</param>
+    /// <returns>The globally qualified name, or null for <c>void</c>.</returns>
+    internal static string? QualifiedName(SyntaxKind keyword) => keyword switch
     {
         SyntaxKind.BoolKeyword => "global::System.Boolean",
         SyntaxKind.ByteKeyword => "global::System.Byte",

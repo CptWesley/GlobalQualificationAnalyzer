@@ -17,9 +17,12 @@ public sealed class GlobalTypeQualificationAnalyzer : DiagnosticAnalyzer
             "Use globally qualified type",
             "Type reference '{0}' must be replaced by '{1}'");
 
-    // Built-in aliases in type arguments are spelled out, matching GQ0002.
-    // Nullable reference type arguments keep their '?' so the replacement does not change nullability.
-    private static readonly SymbolDisplayFormat QualifiedFormat
+    /// <summary>Format of the globally qualified replacement, shared with GQ0003.</summary>
+    /// <remarks>
+    /// Built-in aliases in type arguments are spelled out, matching GQ0002.
+    /// Nullable reference type arguments keep their '?' so the replacement does not change nullability.
+    /// </remarks>
+    internal static readonly SymbolDisplayFormat QualifiedFormat
         = SymbolDisplayFormat.FullyQualifiedFormat
             .RemoveMiscellaneousOptions(SymbolDisplayMiscellaneousOptions.UseSpecialTypes)
             .AddMiscellaneousOptions(SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier);
@@ -78,7 +81,8 @@ public sealed class GlobalTypeQualificationAnalyzer : DiagnosticAnalyzer
             symbol = constructor.ContainingType;
         }
 
-        if (symbol is not ITypeSymbol type || type is IDynamicTypeSymbol or ITypeParameterSymbol)
+        // Using directives are covered by GQ0003.
+        if (symbol is not ITypeSymbol type || type is IDynamicTypeSymbol or ITypeParameterSymbol || node.IsInUsingDirective())
         {
             return;
         }
@@ -111,7 +115,10 @@ public sealed class GlobalTypeQualificationAnalyzer : DiagnosticAnalyzer
         _ => (SimpleNameSyntax)node,
     };
 
-    private static bool IsGloballyQualified(ExpressionSyntax node) => node switch
+    /// <summary>Returns true if the leftmost part of <paramref name="node"/> is <c>global::</c>.</summary>
+    /// <param name="node">The name or member access to inspect.</param>
+    /// <returns>True if globally qualified.</returns>
+    internal static bool IsGloballyQualified(ExpressionSyntax node) => node switch
     {
         QualifiedNameSyntax qualified => IsGloballyQualified(qualified.Left),
         MemberAccessExpressionSyntax access => IsGloballyQualified(access.Expression),

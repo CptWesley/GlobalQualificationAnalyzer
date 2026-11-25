@@ -159,6 +159,12 @@ public sealed class GlobalTypeQualificationAnalyzerTests
         => (await Analyze("using System; class C { }"))
             .Should().BeEmpty();
 
+    /// <summary>Using directives are covered by GQ0003.</summary>
+    [Test]
+    public async Task Ignores_types_in_using_directives()
+        => (await Analyze("using static System.Math; using S = System.String; using L = global::System.Collections.Generic.List<System.String>;"))
+            .Should().BeEmpty();
+
     private static Task<string[]> Analyze(string source)
         => AnalyzerRunner.Analyze(new GlobalTypeQualificationAnalyzer(), source);
 }

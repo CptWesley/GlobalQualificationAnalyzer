@@ -69,6 +69,12 @@ public sealed class BuiltInTypeAliasAnalyzerTests
         => (await Analyze("class C { dynamic a; nint b; nuint c; void M() { var x = 1; } }"))
             .Should().BeEmpty();
 
+    /// <summary>Using directives are covered by GQ0004.</summary>
+    [Test]
+    public async Task Ignores_alias_in_using_directives()
+        => (await Analyze("using I = int; using L = global::System.Collections.Generic.List<string>;"))
+            .Should().BeEmpty();
+
     /// <summary>Every replacement must compile, including where only aliases used to be allowed.</summary>
     [Test]
     public async Task Replacements_compile()
