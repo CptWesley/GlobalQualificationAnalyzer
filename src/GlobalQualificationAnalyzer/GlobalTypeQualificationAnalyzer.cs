@@ -44,24 +44,28 @@ public sealed class GlobalTypeQualificationAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        // Only inspect names that resolve to types.
-        var symbol = context.SemanticModel.GetSymbolInfo(node, ct).Symbol;
+        // Only inspect the outermost name, not every component of a qualified name.
+        if (node.Parent is QualifiedNameSyntax or AliasQualifiedNameSyntax)
+        {
+            return;
+        }
 
-        if (symbol is not ITypeSymbol)
+        // Contextual keywords that bind to types cannot be qualified.
+        if (node.IsVar || node.IsNint || node.IsNuint)
         {
             return;
         }
 
         // Already globally qualified.
-        if (node is AliasQualifiedNameSyntax aliasQualified &&
-            aliasQualified.Alias.Identifier.ValueText == "global")
+        if (IsGloballyQualified(node))
         {
             return;
         }
 
-        // Avoid reporting every component of a qualified name.
-        if (node.Parent is QualifiedNameSyntax parent &&
-            parent.Left == node)
+        // Only inspect names that resolve to types.
+        var symbol = context.SemanticModel.GetSymbolInfo(node, ct).Symbol;
+
+        if (symbol is not ITypeSymbol or IDynamicTypeSymbol)
         {
             return;
         }
@@ -72,5 +76,16 @@ public sealed class GlobalTypeQualificationAnalyzer : DiagnosticAnalyzer
             node.ToString());
 
         context.ReportDiagnostic(diagnostic);
+    }
+
+    private static bool IsGloballyQualified(NameSyntax node)
+    {
+        while (node is QualifiedNameSyntax qualified)
+        {
+            node = qualified.Left;
+        }
+
+        return node is AliasQualifiedNameSyntax aliasQualified
+            && aliasQualified.Alias.Identifier.IsKind(SyntaxKind.GlobalKeyword);
     }
 }

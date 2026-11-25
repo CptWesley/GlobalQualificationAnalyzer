@@ -17,11 +17,6 @@ public sealed class GlobalTypeQualificationAnalyzerTests
             .Should().Equal("Type reference 'System.String' must use global:: qualification");
 
     [Test]
-    public async Task Reports_built_in_types()
-    => (await Analyze("class C { string f; }"))
-        .Should().Equal("Type reference 'string' must use global:: qualification");
-
-    [Test]
     public async Task Reports_unqualified_generic_type()
         => (await Analyze("using System.Collections.Generic; class C { List<int> f; }"))
             .Should().Equal("Type reference 'List<int>' must use global:: qualification");
@@ -59,6 +54,11 @@ public sealed class GlobalTypeQualificationAnalyzerTests
     [Test]
     public async Task Ignores_predefined_types()
         => (await Analyze("class C { int a; string b; object c; }"))
+            .Should().BeEmpty();
+
+    [Test]
+    public async Task Ignores_contextual_type_keywords()
+        => (await Analyze("class C { dynamic a; nint b; nuint c; }"))
             .Should().BeEmpty();
 
     [Test]
