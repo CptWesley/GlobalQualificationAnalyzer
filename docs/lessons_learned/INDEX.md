@@ -16,3 +16,4 @@ Verify any file/type/command still exists before relying on an entry.
 - [2026-11-25-dotnetprojectfile-net-csproj.md](2026-11-25-dotnetprojectfile-net-csproj.md): Setting up DotNetProjectFile via `src/.net.csproj`, fixing the broken `analyzer.props` import and the ambiguous `dotnet build`.
 - [2026-11-25-analyzer-test-project.md](2026-11-25-analyzer-test-project.md): Test project driving the analyzer through `CSharpCompilation.WithAnalyzers`, plus the analyzer bugs those tests exposed and how they were fixed.
 - [2026-11-25-gq0002-builtin-type-alias.md](2026-11-25-gq0002-builtin-type-alias.md): GQ0002 analyzer for built-in type aliases, the `void` exemption and unordered analyzer diagnostics in tests.
+- [2026-11-25-gq0001-expected-type-in-message.md](2026-11-25-gq0001-expected-type-in-message.md): GQ0001 message now names the fully qualified replacement; drop `UseSpecialTypes` from `FullyQualifiedFormat`.

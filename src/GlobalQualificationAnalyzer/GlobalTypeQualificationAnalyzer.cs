@@ -13,7 +13,12 @@ public sealed class GlobalTypeQualificationAnalyzer : DiagnosticAnalyzer
         = RuleHelper.Create(
             1,
             "Use global type qualification",
-            "Type reference '{0}' must use global:: qualification");
+            "Type reference '{0}' must be replaced by '{1}'");
+
+    // Built-in aliases in type arguments are spelled out, matching GQ0002.
+    private static readonly SymbolDisplayFormat QualifiedFormat
+        = SymbolDisplayFormat.FullyQualifiedFormat
+            .RemoveMiscellaneousOptions(SymbolDisplayMiscellaneousOptions.UseSpecialTypes);
 
     /// <inheritdoc />
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = [Rule];
@@ -65,7 +70,7 @@ public sealed class GlobalTypeQualificationAnalyzer : DiagnosticAnalyzer
         // Only inspect names that resolve to types.
         var symbol = context.SemanticModel.GetSymbolInfo(node, ct).Symbol;
 
-        if (symbol is not ITypeSymbol or IDynamicTypeSymbol)
+        if (symbol is not ITypeSymbol type || type is IDynamicTypeSymbol)
         {
             return;
         }
@@ -73,7 +78,8 @@ public sealed class GlobalTypeQualificationAnalyzer : DiagnosticAnalyzer
         var diagnostic = Diagnostic.Create(
             Rule,
             node.GetLocation(),
-            node.ToString());
+            node.ToString(),
+            type.ToDisplayString(QualifiedFormat));
 
         context.ReportDiagnostic(diagnostic);
     }

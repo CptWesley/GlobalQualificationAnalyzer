@@ -5,32 +5,32 @@ public sealed class GlobalTypeQualificationAnalyzerTests
     [Test]
     public async Task Reports_unqualified_type()
         => (await Analyze("using System; class C { String f; }"))
-            .Should().Equal("Type reference 'String' must use global:: qualification");
+            .Should().Equal("Type reference 'String' must be replaced by 'global::System.String'");
 
     [Test]
     public async Task Reports_namespace_qualified_type_once()
         => (await Analyze("class C { System.String f; }"))
-            .Should().Equal("Type reference 'System.String' must use global:: qualification");
+            .Should().Equal("Type reference 'System.String' must be replaced by 'global::System.String'");
 
     [Test]
     public async Task Reports_unqualified_generic_type()
         => (await Analyze("using System.Collections.Generic; class C { List<int> f; }"))
-            .Should().Equal("Type reference 'List<int>' must use global:: qualification");
+            .Should().Equal("Type reference 'List<int>' must be replaced by 'global::System.Collections.Generic.List<global::System.Int32>'");
 
     [Test]
     public async Task Reports_unqualified_type_argument()
         => (await Analyze("using System; class C { global::System.Collections.Generic.List<String> f; }"))
-            .Should().Equal("Type reference 'String' must use global:: qualification");
+            .Should().Equal("Type reference 'String' must be replaced by 'global::System.String'");
 
     [Test]
     public async Task Reports_type_in_typeof()
         => (await Analyze("using System; class C { object f = typeof(String); }"))
-            .Should().Equal("Type reference 'String' must use global:: qualification");
+            .Should().Equal("Type reference 'String' must be replaced by 'global::System.String'");
 
     [Test]
     public async Task Reports_type_declared_in_same_compilation()
         => (await Analyze("namespace N { class A { } class B { A f; } }"))
-            .Should().Equal("Type reference 'A' must use global:: qualification");
+            .Should().Equal("Type reference 'A' must be replaced by 'global::N.A'");
 
     [Test]
     public async Task Ignores_global_alias_on_type()
