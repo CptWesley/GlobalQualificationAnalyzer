@@ -15,6 +15,7 @@
 
   <ItemGroup Label="DefaultImports">
     <Using Include="Microsoft.CodeAnalysis" />
+    <Using Include="Microsoft.CodeAnalysis.Diagnostics" />
   </ItemGroup>
 
   <ItemGroup>
