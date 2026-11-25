@@ -43,7 +43,7 @@ public sealed class UsingBuiltInTypeAliasAnalyzer : DiagnosticAnalyzer
         foreach (var node in directive.NamespaceOrType.DescendantNodesAndSelf().OfType<PredefinedTypeSyntax>())
         {
             // void has no alternative: global::System.Void is not allowed (CS0673).
-            if (BuiltInTypeAliasAnalyzer.QualifiedName(node.Keyword.Kind()) is { } qualified)
+            if (node.Keyword.Kind().QualifiedName() is { } qualified)
             {
                 context.ReportDiagnostic(Diagnostic.Create(
                     Rule,

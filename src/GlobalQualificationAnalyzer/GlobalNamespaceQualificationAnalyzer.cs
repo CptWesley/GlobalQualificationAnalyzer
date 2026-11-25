@@ -54,7 +54,7 @@ public sealed class GlobalNamespaceQualificationAnalyzer : DiagnosticAnalyzer
     private static void AnalyzeName(SyntaxNodeAnalysisContext context, NameSyntax name)
     {
         // Contextual keywords that bind to types cannot be qualified.
-        if (name.IsVar || name.IsNint || name.IsNuint || GlobalTypeQualificationAnalyzer.IsGloballyQualified(name))
+        if (name.IsVar || name.IsNint || name.IsNuint || name.IsGloballyQualified())
         {
             return;
         }

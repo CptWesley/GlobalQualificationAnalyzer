@@ -88,7 +88,7 @@ public sealed class GlobalTypeQualificationAnalyzer : DiagnosticAnalyzer
         }
 
         // Already globally qualified, and attributes spelled with their full type name.
-        if (IsGloballyQualified(node) && !OmitsAttributeSuffix(node, type))
+        if (node.IsGloballyQualified() && !OmitsAttributeSuffix(node, type))
         {
             return;
         }
@@ -113,16 +113,5 @@ public sealed class GlobalTypeQualificationAnalyzer : DiagnosticAnalyzer
         QualifiedNameSyntax qualified => qualified.Right,
         AliasQualifiedNameSyntax aliasQualified => aliasQualified.Name,
         _ => (SimpleNameSyntax)node,
-    };
-
-    /// <summary>Returns true if the leftmost part of <paramref name="node"/> is <c>global::</c>.</summary>
-    /// <param name="node">The name or member access to inspect.</param>
-    /// <returns>True if globally qualified.</returns>
-    internal static bool IsGloballyQualified(ExpressionSyntax node) => node switch
-    {
-        QualifiedNameSyntax qualified => IsGloballyQualified(qualified.Left),
-        MemberAccessExpressionSyntax access => IsGloballyQualified(access.Expression),
-        AliasQualifiedNameSyntax aliasQualified => aliasQualified.Alias.Identifier.IsKind(SyntaxKind.GlobalKeyword),
-        _ => false,
     };
 }
