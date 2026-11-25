@@ -18,4 +18,4 @@ Verify any file/type/command still exists before relying on an entry.
 - [2026-11-25-gq0002-builtin-type-alias.md](2026-11-25-gq0002-builtin-type-alias.md): GQ0002 analyzer for built-in type aliases, the `void` exemption and unordered analyzer diagnostics in tests.
 - [2026-11-25-gq0001-expected-type-in-message.md](2026-11-25-gq0001-expected-type-in-message.md): GQ0001 message now names the fully qualified replacement; drop `UseSpecialTypes` from `FullyQualifiedFormat`.
 - [2026-11-25-nullability-in-messages.md](2026-11-25-nullability-in-messages.md): GQ0001 kept `?` on nullable reference type arguments and skips type parameters; nullability tests for both analyzers.
-- [2026-11-25-gq0001-attributes-member-access.md](2026-11-25-gq0001-attributes-member-access.md): GQ0001 now reports attribute names (bound to ctor) and dotted static member access (`MemberAccessExpression`, not `QualifiedName`).
+- [2026-11-25-gq0001-attributes-member-access.md](2026-11-25-gq0001-attributes-member-access.md): GQ0001 now reports attribute names (bound to ctor, `Attribute` suffix preferred) and dotted static member access (`MemberAccessExpression`, not `QualifiedName`).

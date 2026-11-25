@@ -69,12 +69,6 @@ public sealed class GlobalTypeQualificationAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        // Already globally qualified.
-        if (IsGloballyQualified(node))
-        {
-            return;
-        }
-
         // Only inspect names that resolve to types; type parameters cannot be qualified.
         var symbol = context.SemanticModel.GetSymbolInfo(node, ct).Symbol;
 
@@ -89,26 +83,33 @@ public sealed class GlobalTypeQualificationAnalyzer : DiagnosticAnalyzer
             return;
         }
 
+        // Already globally qualified, and attributes spelled with their full type name.
+        if (IsGloballyQualified(node) && !OmitsAttributeSuffix(node, type))
+        {
+            return;
+        }
+
         var diagnostic = Diagnostic.Create(
             Rule,
             node.GetLocation(),
             node.ToString(),
-            QualifiedName(node, type));
+            type.ToDisplayString(QualifiedFormat));
 
         context.ReportDiagnostic(diagnostic);
     }
 
-    private static string QualifiedName(ExpressionSyntax node, ITypeSymbol type)
-    {
-        var qualified = type.ToDisplayString(QualifiedFormat);
+    /// <summary>'[global::System.Obsolete]' omits the suffix of 'ObsoleteAttribute'.</summary>
+    private static bool OmitsAttributeSuffix(ExpressionSyntax node, ITypeSymbol type)
+        => node.Parent is AttributeSyntax
+            && type.Name.EndsWith(AttributeSuffix, StringComparison.Ordinal)
+            && !RightmostName(node).Identifier.ValueText.EndsWith(AttributeSuffix, StringComparison.Ordinal);
 
-        // Keep the 'Attribute' suffix omitted when the source omits it: '[Obsolete]' becomes '[global::System.Obsolete]'.
-        return node.Parent is AttributeSyntax
-            && qualified.EndsWith(AttributeSuffix, StringComparison.Ordinal)
-            && !node.ToString().EndsWith(AttributeSuffix, StringComparison.Ordinal)
-            ? qualified.Substring(0, qualified.Length - AttributeSuffix.Length)
-            : qualified;
-    }
+    private static SimpleNameSyntax RightmostName(ExpressionSyntax node) => node switch
+    {
+        QualifiedNameSyntax qualified => qualified.Right,
+        AliasQualifiedNameSyntax aliasQualified => aliasQualified.Name,
+        _ => (SimpleNameSyntax)node,
+    };
 
     private static bool IsGloballyQualified(ExpressionSyntax node) => node switch
     {

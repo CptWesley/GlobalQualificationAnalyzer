@@ -14,11 +14,11 @@ Tests showed three gaps:
 
 Plain `Console.WriteLine()` was already reported correctly.
 
-## Message detail
+## Attribute suffix preferred
 
-`ToDisplayString` gives `global::System.ObsoleteAttribute`. When the source omits the `Attribute` suffix, the expected name drops it too, so `[Obsolete]` suggests `global::System.Obsolete`.
+The full type name is preferred: `[Obsolete]` and `[global::System.Obsolete]` both report, suggesting `global::System.ObsoleteAttribute`. Attribute types without the suffix in their name (`class Marker : Attribute`) are fine as `[global::Marker]`. Compare the suffix on `type.Name` and the rightmost `SimpleNameSyntax` identifier, not on `ToString()`, so generic attributes (`[global::My<int>]`) work. The globally-qualified check therefore runs after symbol resolution.
 
 ## Analyzer warnings hit
 
 - SA1203: `const` must come before `static readonly` fields.
-- S3776: `AnalyzeName` crossed cognitive complexity 15; suffix logic moved to `QualifiedName(node, type)`.
+- S3776: `AnalyzeName` crossed cognitive complexity 15; suffix logic lives in `OmitsAttributeSuffix(node, type)`.

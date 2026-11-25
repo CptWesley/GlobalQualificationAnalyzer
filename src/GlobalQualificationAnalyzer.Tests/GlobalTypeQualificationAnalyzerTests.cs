@@ -107,7 +107,7 @@ public sealed class GlobalTypeQualificationAnalyzerTests
     [Test]
     public async Task Reports_unqualified_attribute()
         => (await Analyze("using System; [Obsolete] class C { }"))
-            .Should().Equal("Type reference 'Obsolete' must be replaced by 'global::System.Obsolete'");
+            .Should().Equal("Type reference 'Obsolete' must be replaced by 'global::System.ObsoleteAttribute'");
 
     [Test]
     public async Task Reports_unqualified_attribute_with_suffix()
@@ -117,12 +117,27 @@ public sealed class GlobalTypeQualificationAnalyzerTests
     [Test]
     public async Task Reports_namespace_qualified_attribute()
         => (await Analyze("[System.Obsolete] class C { }"))
-            .Should().Equal("Type reference 'System.Obsolete' must be replaced by 'global::System.Obsolete'");
+            .Should().Equal("Type reference 'System.Obsolete' must be replaced by 'global::System.ObsoleteAttribute'");
 
     [Test]
-    public async Task Ignores_globally_qualified_attribute()
+    public async Task Reports_globally_qualified_attribute_without_suffix()
         => (await Analyze("[global::System.Obsolete] class C { }"))
+            .Should().Equal("Type reference 'global::System.Obsolete' must be replaced by 'global::System.ObsoleteAttribute'");
+
+    [Test]
+    public async Task Ignores_globally_qualified_attribute_with_suffix()
+        => (await Analyze("[global::System.ObsoleteAttribute] class C { }"))
             .Should().BeEmpty();
+
+    [Test]
+    public async Task Ignores_globally_qualified_attribute_type_without_suffix_in_name()
+        => (await Analyze("class Marker : global::System.Attribute { } [global::Marker] class C { }"))
+            .Should().BeEmpty();
+
+    [Test]
+    public async Task Reports_globally_qualified_generic_attribute_without_suffix()
+        => (await Analyze("class MyAttribute<T> : global::System.Attribute { } [global::My<int>] class C { }"))
+            .Should().Equal("Type reference 'global::My<int>' must be replaced by 'global::MyAttribute<global::System.Int32>'");
 
     [Test]
     public async Task Reports_unqualified_static_member_access()
