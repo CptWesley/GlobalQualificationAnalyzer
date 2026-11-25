@@ -1,0 +1,60 @@
+<Project>
+
+  <Import Project="common.props" />
+
+  <PropertyGroup Label="PackageInfo">
+    <Description>Roslyn analyzer for enforcing global qualification of types and namespaces.</Description>
+    <PackageTags>roslyn;analyzer;global</PackageTags>
+    <Version>1.0.0-preview.1</Version>
+    <PackageReleaseNotes>
+      <![CDATA[
+        ### v1.0.0
+        - Initial release.
+      ]]>
+    </PackageReleaseNotes>
+  </PropertyGroup>
+
+  <PropertyGroup Label="PackageInfoTechnical">
+    <IsPackable>true</IsPackable>
+    <PackageId>$(AssemblyName)</PackageId>
+    <ProductName>$(AssemblyName)</ProductName>
+    <GenerateSBOM>true</GenerateSBOM>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Technical">
+    <OutputType>Library</OutputType>
+    <TargetFrameworks>netstandard2.0;netcoreapp3.0;net5.0;net6.0;net7.0;net8.0;net9.0;net10.0;net11.0</TargetFrameworks>
+  </PropertyGroup>
+
+  <PropertyGroup Label="DebugInfo">
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Label="PackageValidation">
+    <PackageValidationBaselineVersion>1.0.0</PackageValidationBaselineVersion>
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <ApiCompatEnableRuleCannotChangeParameterName>true</ApiCompatEnableRuleCannotChangeParameterName>
+    <ApiCompatEnableRuleAttributesMustMatch>true</ApiCompatEnableRuleAttributesMustMatch>
+    <ApiCompatGenerateSuppressionFile>true</ApiCompatGenerateSuppressionFile>
+    <EnableStrictModeForCompatibleFrameworksInPackage>true</EnableStrictModeForCompatibleFrameworksInPackage>
+    <EnableStrictModeForBaselineValidation>true</EnableStrictModeForBaselineValidation>
+  </PropertyGroup>
+
+  <ItemGroup Label="Analyzers">
+    <PackageReference Include="StyleCop.Analyzers.Unstable" PrivateAssets="all" ExcludeAssets="compile" />
+  </ItemGroup>
+
+  <ItemGroup Label="Other">
+    <PackageReference Include="Microsoft.Sbom.Targets" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>
