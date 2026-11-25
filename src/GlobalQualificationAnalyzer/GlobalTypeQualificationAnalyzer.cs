@@ -9,6 +9,8 @@ namespace GlobalQualificationAnalyzer;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class GlobalTypeQualificationAnalyzer : DiagnosticAnalyzer
 {
+    private const string AttributeSuffix = "Attribute";
+
     private static readonly DiagnosticDescriptor Rule
         = RuleHelper.Create(
             1,
@@ -38,18 +40,15 @@ public sealed class GlobalTypeQualificationAnalyzer : DiagnosticAnalyzer
             SyntaxKind.IdentifierName,
             SyntaxKind.QualifiedName,
             SyntaxKind.AliasQualifiedName,
-            SyntaxKind.GenericName);
+            SyntaxKind.GenericName,
+            SyntaxKind.SimpleMemberAccessExpression);
     }
 
     private static void AnalyzeName(SyntaxNodeAnalysisContext context)
     {
         var ct = context.CancellationToken;
 
-        // Only name syntax nodes.
-        if (context.Node is not NameSyntax node)
-        {
-            return;
-        }
+        var node = (ExpressionSyntax)context.Node;
 
         // Only inspect the outermost name, not every component of a qualified name.
         if (node.Parent is QualifiedNameSyntax or AliasQualifiedNameSyntax)
@@ -57,8 +56,15 @@ public sealed class GlobalTypeQualificationAnalyzer : DiagnosticAnalyzer
             return;
         }
 
+        // In 'System.Console.WriteLine()' only the outermost access that resolves to a type is inspected.
+        if (node.Parent is MemberAccessExpressionSyntax parent
+            && (parent.Name == node || context.SemanticModel.GetSymbolInfo(parent, ct).Symbol is ITypeSymbol))
+        {
+            return;
+        }
+
         // Contextual keywords that bind to types cannot be qualified.
-        if (node.IsVar || node.IsNint || node.IsNuint)
+        if (node is NameSyntax name && (name.IsVar || name.IsNint || name.IsNuint))
         {
             return;
         }
@@ -72,6 +78,12 @@ public sealed class GlobalTypeQualificationAnalyzer : DiagnosticAnalyzer
         // Only inspect names that resolve to types; type parameters cannot be qualified.
         var symbol = context.SemanticModel.GetSymbolInfo(node, ct).Symbol;
 
+        // An attribute name binds to the attribute constructor.
+        if (node.Parent is AttributeSyntax && symbol is IMethodSymbol constructor)
+        {
+            symbol = constructor.ContainingType;
+        }
+
         if (symbol is not ITypeSymbol type || type is IDynamicTypeSymbol or ITypeParameterSymbol)
         {
             return;
@@ -81,19 +93,28 @@ public sealed class GlobalTypeQualificationAnalyzer : DiagnosticAnalyzer
             Rule,
             node.GetLocation(),
             node.ToString(),
-            type.ToDisplayString(QualifiedFormat));
+            QualifiedName(node, type));
 
         context.ReportDiagnostic(diagnostic);
     }
 
-    private static bool IsGloballyQualified(NameSyntax node)
+    private static string QualifiedName(ExpressionSyntax node, ITypeSymbol type)
     {
-        while (node is QualifiedNameSyntax qualified)
-        {
-            node = qualified.Left;
-        }
+        var qualified = type.ToDisplayString(QualifiedFormat);
 
-        return node is AliasQualifiedNameSyntax aliasQualified
-            && aliasQualified.Alias.Identifier.IsKind(SyntaxKind.GlobalKeyword);
+        // Keep the 'Attribute' suffix omitted when the source omits it: '[Obsolete]' becomes '[global::System.Obsolete]'.
+        return node.Parent is AttributeSyntax
+            && qualified.EndsWith(AttributeSuffix, StringComparison.Ordinal)
+            && !node.ToString().EndsWith(AttributeSuffix, StringComparison.Ordinal)
+            ? qualified.Substring(0, qualified.Length - AttributeSuffix.Length)
+            : qualified;
     }
+
+    private static bool IsGloballyQualified(ExpressionSyntax node) => node switch
+    {
+        QualifiedNameSyntax qualified => IsGloballyQualified(qualified.Left),
+        MemberAccessExpressionSyntax access => IsGloballyQualified(access.Expression),
+        AliasQualifiedNameSyntax aliasQualified => aliasQualified.Alias.Identifier.IsKind(SyntaxKind.GlobalKeyword),
+        _ => false,
+    };
 }

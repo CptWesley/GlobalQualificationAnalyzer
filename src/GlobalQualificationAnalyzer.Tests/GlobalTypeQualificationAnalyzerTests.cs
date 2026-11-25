@@ -105,6 +105,41 @@ public sealed class GlobalTypeQualificationAnalyzerTests
             .Should().BeEmpty();
 
     [Test]
+    public async Task Reports_unqualified_attribute()
+        => (await Analyze("using System; [Obsolete] class C { }"))
+            .Should().Equal("Type reference 'Obsolete' must be replaced by 'global::System.Obsolete'");
+
+    [Test]
+    public async Task Reports_unqualified_attribute_with_suffix()
+        => (await Analyze("using System; [ObsoleteAttribute] class C { }"))
+            .Should().Equal("Type reference 'ObsoleteAttribute' must be replaced by 'global::System.ObsoleteAttribute'");
+
+    [Test]
+    public async Task Reports_namespace_qualified_attribute()
+        => (await Analyze("[System.Obsolete] class C { }"))
+            .Should().Equal("Type reference 'System.Obsolete' must be replaced by 'global::System.Obsolete'");
+
+    [Test]
+    public async Task Ignores_globally_qualified_attribute()
+        => (await Analyze("[global::System.Obsolete] class C { }"))
+            .Should().BeEmpty();
+
+    [Test]
+    public async Task Reports_unqualified_static_member_access()
+        => (await Analyze("using System; class C { void M() { Console.WriteLine(); } }"))
+            .Should().Equal("Type reference 'Console' must be replaced by 'global::System.Console'");
+
+    [Test]
+    public async Task Reports_namespace_qualified_static_member_access()
+        => (await Analyze("class C { void M() { System.Console.WriteLine(); } }"))
+            .Should().Equal("Type reference 'System.Console' must be replaced by 'global::System.Console'");
+
+    [Test]
+    public async Task Ignores_globally_qualified_static_member_access()
+        => (await Analyze("class C { void M() { global::System.Console.WriteLine(); } }"))
+            .Should().BeEmpty();
+
+    [Test]
     public async Task Ignores_namespaces_in_using_directives()
         => (await Analyze("using System; class C { }"))
             .Should().BeEmpty();
