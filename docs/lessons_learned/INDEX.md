@@ -24,3 +24,4 @@ Verify any file/type/command still exists before relying on an entry.
 - [2026-11-25-code-fixes.md](2026-11-25-code-fixes.md): One text-replacement code fix for GQ0001–GQ0004 via a replacement in diagnostic properties; custom fix-all skips nested diagnostics; RS1038 suppressed.
 - [2026-11-25-rule-docs.md](2026-11-25-rule-docs.md): Rule documentation in `docs/rules/` (one file per GQ rule plus `INDEX.md`), samples taken from the analyzer tests.
 - [2026-11-25-doc-test-coverage.md](2026-11-25-doc-test-coverage.md): Tests added for every rule-doc case not yet covered; GQ0001 doc corrected on type arguments of qualified names.
+- [2026-11-25-readme.md](2026-11-25-readme.md): Root README with rule table, NuGet badges, install and configuration; keep its rule table in sync with `docs/rules/INDEX.md`.
