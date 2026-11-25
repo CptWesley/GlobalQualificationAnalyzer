@@ -68,8 +68,16 @@ public sealed class GlobalNamespaceQualificationAnalyzerTests
             using global::System;
             using static global::System.Math;
             using T = global::System.Text;
+            using S = global::System.String;
             using L = global::System.Collections.Generic.List<global::System.String>;
+            using P = (global::System.String, global::System.Int32[]);
+            namespace N { using global::System.Linq; }
             """))
+            .Should().BeEmpty();
+
+    [Test]
+    public async Task Ignores_contextual_type_keywords()
+        => (await Analyze("using A = nint; using B = nuint; using C = global::System.Collections.Generic.List<var>; class var { }"))
             .Should().BeEmpty();
 
     [Test]

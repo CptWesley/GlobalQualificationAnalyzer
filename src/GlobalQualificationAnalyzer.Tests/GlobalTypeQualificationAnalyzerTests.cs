@@ -17,6 +17,24 @@ public sealed class GlobalTypeQualificationAnalyzerTests
         => (await Analyze("using System.Collections.Generic; class C { List<int> f; }"))
             .Should().Equal("Type reference 'List<int>' must be replaced by 'global::System.Collections.Generic.List<global::System.Int32>'");
 
+    [TestCase("class C { String P { get; set; } }", "String", "global::System.String")]
+    [TestCase("class C { void M(String p) { } }", "String", "global::System.String")]
+    [TestCase("class C { void M() { String l = null; } }", "String", "global::System.String")]
+    [TestCase("class C { String M() => null; }", "String", "global::System.String")]
+    [TestCase("class C : Exception { }", "Exception", "global::System.Exception")]
+    [TestCase("class C { object f = (String)null; }", "String", "global::System.String")]
+    [TestCase("class C { object f = new Object(); }", "Object", "global::System.Object")]
+    public async Task Reports_type_in_declaration_and_expression(string source, string name, string qualified)
+        => (await Analyze($"using System; {source}"))
+            .Should().Equal($"Type reference '{name}' must be replaced by '{qualified}'");
+
+    [Test]
+    public async Task Reports_unqualified_type_argument_of_namespace_qualified_type()
+        => (await Analyze("using System; class C { System.Collections.Generic.List<String> f; }"))
+            .Should().BeEquivalentTo(
+                "Type reference 'System.Collections.Generic.List<String>' must be replaced by 'global::System.Collections.Generic.List<global::System.String>'",
+                "Type reference 'String' must be replaced by 'global::System.String'");
+
     [Test]
     public async Task Reports_unqualified_type_argument()
         => (await Analyze("using System; class C { global::System.Collections.Generic.List<String> f; }"))

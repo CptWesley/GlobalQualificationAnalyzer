@@ -3,9 +3,18 @@ namespace GlobalQualificationAnalyzer.Tests;
 public sealed class UsingBuiltInTypeAliasAnalyzerTests
 {
     [TestCase("bool", "global::System.Boolean")]
+    [TestCase("byte", "global::System.Byte")]
+    [TestCase("sbyte", "global::System.SByte")]
     [TestCase("char", "global::System.Char")]
+    [TestCase("decimal", "global::System.Decimal")]
+    [TestCase("double", "global::System.Double")]
     [TestCase("float", "global::System.Single")]
     [TestCase("int", "global::System.Int32")]
+    [TestCase("uint", "global::System.UInt32")]
+    [TestCase("long", "global::System.Int64")]
+    [TestCase("ulong", "global::System.UInt64")]
+    [TestCase("short", "global::System.Int16")]
+    [TestCase("ushort", "global::System.UInt16")]
     [TestCase("object", "global::System.Object")]
     [TestCase("string", "global::System.String")]
     public async Task Reports_alias(string alias, string qualified)

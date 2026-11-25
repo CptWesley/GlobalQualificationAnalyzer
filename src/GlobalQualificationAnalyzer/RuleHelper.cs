@@ -7,6 +7,10 @@ namespace GlobalQualificationAnalyzer;
 /// </summary>
 internal static class RuleHelper
 {
+#pragma warning disable S1075 // URIs should not be hardcoded
+    private const string UrlBase = "https://github.com/CptWesley/GlobalQualificationAnalyzer/blob/main/docs/rules";
+#pragma warning restore S1075 // URIs should not be hardcoded
+
     /// <summary>Key of the diagnostic property that holds the globally qualified replacement.</summary>
     public const string ReplacementKey = "Replacement";
 
@@ -50,14 +54,19 @@ internal static class RuleHelper
         string category = "Naming",
         DiagnosticSeverity severity = DiagnosticSeverity.Warning,
         bool isEnabledByDefault = true)
-        => new(
-            id: $"GQ{id.ToString("D4", CultureInfo.InvariantCulture)}",
+    {
+        var fullId = $"GQ{id.ToString("D4", CultureInfo.InvariantCulture)}";
+
+        return new(
+            id: fullId,
             title: title,
             messageFormat: message ?? title,
             category: category,
             defaultSeverity: severity,
             isEnabledByDefault: isEnabledByDefault,
-            description: description);
+            description: description,
+            helpLinkUri: $"{UrlBase}/{fullId}.md");
+    }
 
     /// <summary>
     /// Returns true if <paramref name="node"/> is part of a using directive.
