@@ -1,0 +1,12 @@
+<Project>
+
+  <Import Project="common.props" />
+  <Import Project="default_imports.props" />
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>net11.0</TargetFrameworks>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+</Project>

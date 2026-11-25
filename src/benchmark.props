@@ -1,0 +1,14 @@
+
+<Project>
+
+  <Import Project="executable.props" />
+
+  <PropertyGroup>
+    <NoWarn>S1104</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,72 @@
+<Project>
+
+  <PropertyGroup>
+    <Authors>Wesley Baartman</Authors>
+    <Copyright>Copyright © Wesley Baartman 2026-current</Copyright>
+    <RepositoryUrl>https://github.com/CptWesley/GlobalQualificationAnalyzer</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIconUrl>https://github.com/CptWesley/GlobalQualificationAnalyzer/blob/master/logo_128x128.png?raw=true</PackageIconUrl>
+    <PackageIcon>logo_128x128.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../logo_128x128.png" Pack="true" Visible="false" PackagePath="" />
+    <None Include="../../README.md" Pack="true" Visible="false" PackagePath="" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <LangVersion>13.0</LangVersion>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <CheckEolTargetFramework>false</CheckEolTargetFramework>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NuGetAudit>true</NuGetAudit>
+    <NuGetAuditMode>all</NuGetAuditMode>
+    <DebugType>portable</DebugType>
+    <IsPublishable>false</IsPublishable>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <IsTestProject>false</IsTestProject>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(ContinuousIntegrationBuild)' == 'true'">
+    <RestoreLockedMode>true</RestoreLockedMode>
+  </PropertyGroup>
+
+  <ItemGroup Label="Analyzers">
+    <PackageReference Include="AsyncFixer" PrivateAssets="all" ExcludeAssets="compile" />
+    <PackageReference Include="DotNetProjectFile.Analyzers" PrivateAssets="all" ExcludeAssets="compile" />
+    <PackageReference Include="Qowaiv.Analyzers.CSharp" PrivateAssets="all" ExcludeAssets="compile" />
+    <PackageReference Include="SonarAnalyzer.CSharp" PrivateAssets="all" ExcludeAssets="compile" />
+  </ItemGroup>
+
+  <ItemGroup Label="CodeGenerators">
+    <PackageReference Include="PolySharp" PrivateAssets="all" ExcludeAssets="compile" />
+  </ItemGroup>
+
+  <ItemGroup Label="BuildTools">
+    <PackageReference Include="DotNet.ReproducibleBuilds" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="*.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Label="ProjectFiles">
+    <AdditionalFiles Include="*.??proj" Visible="false" />
+    <AdditionalFiles Include="../common.props" Link="Properties/common.props" Visible="false" />
+    <AdditionalFiles Include="../package.props" Link="Properties/package.props" Visible="false" />
+    <AdditionalFiles Include="../executable.props" Link="Properties/executable.props" Visible="false" />
+    <AdditionalFiles Include="../benchmarks.props" Link="Properties/benchmarks.props" Visible="false" />
+    <AdditionalFiles Include="../tests.props" Link="Properties/tests.props" Visible="false" />
+    <AdditionalFiles Include="../default_imports.props" Link="Properties/default_imports.props" Visible="false" />
+  </ItemGroup>
+
+</Project>
