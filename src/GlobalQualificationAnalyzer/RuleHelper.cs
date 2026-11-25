@@ -7,7 +7,9 @@ namespace GlobalQualificationAnalyzer;
 /// </summary>
 internal static class RuleHelper
 {
+#pragma warning disable S1075 // URIs should not be hardcoded
     private const string UrlBase = "https://github.com/CptWesley/GlobalQualificationAnalyzer/blob/main/docs/rules";
+#pragma warning restore S1075 // URIs should not be hardcoded
 
     /// <summary>Key of the diagnostic property that holds the globally qualified replacement.</summary>
     public const string ReplacementKey = "Replacement";
