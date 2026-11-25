@@ -12,13 +12,15 @@ public sealed class GlobalTypeQualificationAnalyzer : DiagnosticAnalyzer
     private static readonly DiagnosticDescriptor Rule
         = RuleHelper.Create(
             1,
-            "Use global type qualification",
+            "Use globally qualified type",
             "Type reference '{0}' must be replaced by '{1}'");
 
     // Built-in aliases in type arguments are spelled out, matching GQ0002.
+    // Nullable reference type arguments keep their '?' so the replacement does not change nullability.
     private static readonly SymbolDisplayFormat QualifiedFormat
         = SymbolDisplayFormat.FullyQualifiedFormat
-            .RemoveMiscellaneousOptions(SymbolDisplayMiscellaneousOptions.UseSpecialTypes);
+            .RemoveMiscellaneousOptions(SymbolDisplayMiscellaneousOptions.UseSpecialTypes)
+            .AddMiscellaneousOptions(SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier);
 
     /// <inheritdoc />
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = [Rule];
@@ -67,10 +69,10 @@ public sealed class GlobalTypeQualificationAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        // Only inspect names that resolve to types.
+        // Only inspect names that resolve to types; type parameters cannot be qualified.
         var symbol = context.SemanticModel.GetSymbolInfo(node, ct).Symbol;
 
-        if (symbol is not ITypeSymbol type || type is IDynamicTypeSymbol)
+        if (symbol is not ITypeSymbol type || type is IDynamicTypeSymbol or ITypeParameterSymbol)
         {
             return;
         }

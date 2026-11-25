@@ -27,6 +27,18 @@ public sealed class BuiltInTypeAliasAnalyzerTests
             .Should().Equal("Built-in type alias 'int' must be replaced by 'global::System.Int32'");
 
     [Test]
+    public async Task Reports_alias_in_nullable_reference_types()
+        => (await Analyze("#nullable enable\nclass C { string? a; global::System.Collections.Generic.List<object?>? b; }"))
+            .Should().BeEquivalentTo(
+                "Built-in type alias 'string' must be replaced by 'global::System.String'",
+                "Built-in type alias 'object' must be replaced by 'global::System.Object'");
+
+    [Test]
+    public async Task Reports_alias_in_nullable_value_type()
+        => (await Analyze("class C { long? f; }"))
+            .Should().Equal("Built-in type alias 'long' must be replaced by 'global::System.Int64'");
+
+    [Test]
     public async Task Reports_alias_in_member_access_typeof_and_cast()
         => (await Analyze("class C { object a = string.Empty; object b = typeof(long); object c = (byte)1; }"))
             .Should().BeEquivalentTo(

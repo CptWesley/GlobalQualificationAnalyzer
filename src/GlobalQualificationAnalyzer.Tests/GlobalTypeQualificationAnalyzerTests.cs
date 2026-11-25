@@ -33,6 +33,48 @@ public sealed class GlobalTypeQualificationAnalyzerTests
             .Should().Equal("Type reference 'A' must be replaced by 'global::N.A'");
 
     [Test]
+    public async Task Reports_nullable_reference_type_without_modifier()
+        => (await Analyze("#nullable enable\nusing System; class C { String? f; }"))
+            .Should().Equal("Type reference 'String' must be replaced by 'global::System.String'");
+
+    [Test]
+    public async Task Reports_nullable_value_type_without_modifier()
+        => (await Analyze("using System; class C { Int32? f; }"))
+            .Should().Equal("Type reference 'Int32' must be replaced by 'global::System.Int32'");
+
+    [Test]
+    public async Task Reports_nullable_generic_type_without_modifier()
+        => (await Analyze("#nullable enable\nusing System.Collections.Generic; class C { List<int>? f; }"))
+            .Should().Equal("Type reference 'List<int>' must be replaced by 'global::System.Collections.Generic.List<global::System.Int32>'");
+
+    [Test]
+    public async Task Keeps_nullable_reference_type_argument()
+        => (await Analyze("#nullable enable\nusing System.Collections.Generic; class C { List<string?> f = new(); }"))
+            .Should().Equal("Type reference 'List<string?>' must be replaced by 'global::System.Collections.Generic.List<global::System.String?>'");
+
+    [Test]
+    public async Task Keeps_nullable_value_type_argument()
+        => (await Analyze("using System.Collections.Generic; class C { List<int?> f; }"))
+            .Should().Equal("Type reference 'List<int?>' must be replaced by 'global::System.Collections.Generic.List<global::System.Int32?>'");
+
+    [Test]
+    public async Task Keeps_nested_nullable_type_arguments()
+        => (await Analyze("#nullable enable\nusing System.Collections.Generic; class C { Dictionary<string, List<object?>?> f = new(); }"))
+            .Should().BeEquivalentTo(
+                "Type reference 'Dictionary<string, List<object?>?>' must be replaced by 'global::System.Collections.Generic.Dictionary<global::System.String, global::System.Collections.Generic.List<global::System.Object?>?>'",
+                "Type reference 'List<object?>' must be replaced by 'global::System.Collections.Generic.List<global::System.Object?>'");
+
+    [Test]
+    public async Task Omits_modifier_in_disabled_nullable_context()
+        => (await Analyze("#nullable disable\nusing System.Collections.Generic; class C { List<string> f; }"))
+            .Should().Equal("Type reference 'List<string>' must be replaced by 'global::System.Collections.Generic.List<global::System.String>'");
+
+    [Test]
+    public async Task Ignores_type_parameters()
+        => (await Analyze("#nullable enable\nclass C<T> { T? a; T b = default!; }"))
+            .Should().BeEmpty();
+
+    [Test]
     public async Task Ignores_global_alias_on_type()
         => (await Analyze("class C { global::C f; }"))
             .Should().BeEmpty();
